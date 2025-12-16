@@ -7,6 +7,11 @@ const path = require('path');
 
 let browser;
 
+/* ================= FONT PATH INJECTION ================= */
+const devanagariFontPath = path
+  .join(__dirname, 'fonts', 'NotoSansDevanagari-VariableFont_wdth,wght.ttf')
+  .replace(/\\/g, '/');
+
 /* ================= REUSABLE BROWSER INSTANCE ================= */
 async function getBrowser() {
   if (!browser) {
@@ -156,8 +161,8 @@ app.post('/generate', async (req, res) => {
 
     /* ================= SELECT TEMPLATE ================= */
     const html = invoice_type === 'sand'
-      ? generateSandInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total)
-      : generateSimpleInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total);
+      ? generateSandInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontPath)
+      : generateSimpleInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontPath);
 
     /* ================= GENERATE PDF ================= */
     const browser = await getBrowser();
@@ -199,7 +204,7 @@ app.post('/generate', async (req, res) => {
 });
 
 /* ================= SIMPLE INVOICE TEMPLATE (CEMENT) ================= */
-function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total) {
+function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total, fontPath) {
   /* ================= DUMMY ROWS ================= */
   const ROWS_PER_PAGE = 35;
   const itemsWithDummies = [...items];
@@ -230,8 +235,8 @@ function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, par
 
 @font-face {
   font-family: 'NotoDeva';
-  src: url('https://fonts.gstatic.com/s/notosansdevanagari/v25/xH2vF5pWnGCMpU5QIauqfBCF6f4.woff2') format('woff2');
-  font-weight: normal;
+  src: url('file://${fontPath}') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
 }
 
@@ -444,7 +449,7 @@ body {
 }
 
 /* ================= SAND INVOICE TEMPLATE ================= */
-function generateSandInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total) {
+function generateSandInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total, fontPath) {
   const ROWS_PER_PAGE = 35;
   const itemsWithDummies = [...items];
   const dummyCount = ROWS_PER_PAGE - items.length;
@@ -466,7 +471,7 @@ function generateSandInvoiceHTML(items, invoiceNo, invoiceDate, partyName, party
 @page { size: A4; margin: 10mm; }
 @font-face {
   font-family: 'NotoDeva';
-  src: url('https://fonts.gstatic.com/s/notosansdevanagari/v25/xH2vF5pWnGCMpU5QIauqfBCF6f4.woff2') format('woff2');
+  src: url('file://${fontPath}') format('truetype');
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
