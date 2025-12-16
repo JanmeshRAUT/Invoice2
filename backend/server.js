@@ -200,41 +200,162 @@ app.post('/generate', async (req, res) => {
 
 /* ================= SIMPLE INVOICE TEMPLATE (CEMENT) ================= */
 function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total) {
+  /* ================= DUMMY ROWS ================= */
+  const ROWS_PER_PAGE = 20;
+  const itemsWithDummies = [...items];
+  const dummyCount = ROWS_PER_PAGE - items.length;
+  
+  if (dummyCount > 0) {
+    for (let i = 0; i < dummyCount; i++) {
+      itemsWithDummies.push({
+        desc: '',
+        hsn: '',
+        qty: '',
+        rate: '',
+        amount: ''
+      });
+    }
+  }
+
   return `
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <style>
-@page { size: A4; margin: 10mm; }
+@page {
+  size: A4;
+  margin: 10mm;
+}
+
 @font-face {
   font-family: 'NotoDeva';
   src: url('https://fonts.gstatic.com/s/notosansdevanagari/v25/xH2vF5pWnGCMpU5QIauqfBCF6f4.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
-.deva { font-family: 'NotoDeva', Arial, sans-serif; font-size: 18px; font-weight: bold; }
-.page { min-height: 277mm; display: flex; flex-direction: column; }
-.header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; }
-.header-title { font-size: 16px; font-weight: bold; }
-.header-marked { font-size: 18px; font-weight: bold; color: red; }
-.box { width: 100%; border: 1px solid #000; margin-top: 4px; }
-.box td { padding: 4px; vertical-align: top; }
-.tax { margin-top: 8px; font-weight: bold; font-size: 18px; }
-.items { width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 4px; }
-.items th, .items td { border-right: 1px solid #000; padding: 3px 4px; vertical-align: top; }
-.items th:last-child, .items td:last-child { border-right: none; }
-.items thead th { background: #d3d3d3; font-weight: bold; text-align: left; font-size: 11px; }
-.items tbody tr { height: 18px; }
-.items td { word-break: break-word; }
-.items tfoot td { border-top: 2px solid #000; font-weight: bold; padding-top: 4px; }
-.footer { margin-top: auto; width: 100%; }
-.footer td { padding: 6px; vertical-align: top; }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #000;
+}
+
+.deva {
+  font-family: 'NotoDeva', Arial, sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* PAGE */
+.page {
+  min-height: 277mm;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.header {
+  text-align: center;
+  border-bottom: 2px solid #000;
+  padding-bottom: 10px;
+}
+.header-title {
+  font-size: 16px;
+  font-weight: bold;
+}
+.header-marked {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+}
+
+/* BOX */
+.box {
+  width: 100%;
+  border: 1px solid #000;
+  margin-top: 4px;
+}
+.box td {
+  padding: 4px;
+  vertical-align: top;
+}
+.tax {
+  margin-top: 8px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+/* ITEMS TABLE */
+.items {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #000;
+  margin-top: 4px;
+}
+
+.items th,
+.items td {
+  border-right: 1px solid #000;
+  padding: 3px 4px;
+  vertical-align: top;
+}
+
+.items th:last-child,
+.items td:last-child {
+  border-right: none;
+}
+
+.items thead th {
+  background: #d3d3d3;
+  font-weight: bold;
+  text-align: left;
+}
+
+.items tbody tr {
+  height: 18px;
+}
+
+.items tr {
+  page-break-inside: avoid;
+}
+
+.items td {
+  word-break: break-word;
+}
+
+.items tfoot .total-row td {
+  border-top: 2px solid #000;
+  font-weight: bold;
+  padding-top: 4px;
+}
+
+/* FOOTER */
+.footer {
+  margin-top: auto;
+  width: 100%;
+}
+.footer td {
+  padding: 6px;
+  vertical-align: top;
+}
+
 .r { text-align: right; }
+.b { font-weight: bold; }
+
 </style>
 </head>
+
 <body>
 <div class="page">
+
+  <!-- HEADER -->
   <div class="header">
     <div class="header-marked deva">|| श्री ||</div>
     <div class="header-title">SHREE SADGURU KRUPA ENTERPRISES</div>
@@ -243,6 +364,7 @@ body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
     <div class="tax">TAX INVOICE</div>
   </div>
 
+  <!-- PARTY -->
   <table class="box">
     <tr>
       <td width="60%">
@@ -259,51 +381,49 @@ body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
     </tr>
   </table>
 
+  <!-- ITEMS -->
   <table class="items">
     <thead>
       <tr>
-        <th width="50%">Description</th>
-        <th width="15%">HSN</th>
+        <th width="36%">Description</th>
+        <th width="14%">HSN</th>
         <th width="10%">Qty</th>
-        <th width="12.5%">Rate</th>
-        <th width="12.5%">Amount</th>
+        <th width="20%">Rate</th>
+        <th width="20%">Amount</th>
       </tr>
     </thead>
     <tbody>
-      ${items.map(i => `
+      ${itemsWithDummies.map(i => `
       <tr>
         <td>${i.desc}</td>
         <td>${i.hsn}</td>
         <td class="r">${i.qty}</td>
-        <td class="r">${Number(i.rate).toFixed(2)}</td>
-        <td class="r">${Number(i.amount).toFixed(2)}</td>
+        <td class="r">${i.rate !== '' ? Number(i.rate).toFixed(2) : ''}</td>
+        <td class="r">${i.amount !== '' ? Number(i.amount).toFixed(2) : ''}</td>
       </tr>
       `).join('')}
     </tbody>
     <tfoot>
       <tr>
-        <td colspan="4" style="text-align: right; border-right: 1px solid #000;">Total</td>
-        <td class="r">${subtotal.toFixed(2)}</td>
-      </tr>
-      <tr>
-        <td colspan="4" style="text-align: right; border-right: 1px solid #000;">CGST @9%</td>
+        <td>CGST @9%</td><td></td><td></td><td></td>
         <td class="r">${cgst.toFixed(2)}</td>
       </tr>
       <tr>
-        <td colspan="4" style="text-align: right; border-right: 1px solid #000;">SGST @9%</td>
+        <td>SGST @9%</td><td></td><td></td><td></td>
         <td class="r">${sgst.toFixed(2)}</td>
       </tr>
       <tr>
-        <td colspan="4" style="text-align: right; border-right: 1px solid #000;">Round Off</td>
+        <td>LESS : Round Off</td><td></td><td></td><td></td>
         <td class="r">${roundoff.toFixed(2)}</td>
       </tr>
-      <tr style="font-weight: bold; background: #e0e0e0;">
-        <td colspan="4" style="text-align: right; border-right: 1px solid #000;">G. Total</td>
+      <tr class="total-row">
+        <td>Total</td><td></td><td></td><td></td>
         <td class="r">Rs.${total.toLocaleString('en-IN')}</td>
       </tr>
     </tfoot>
   </table>
 
+  <!-- FOOTER -->
   <table class="footer">
     <tr>
       <td width="60%">
@@ -316,6 +436,7 @@ body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
       </td>
     </tr>
   </table>
+
 </div>
 </body>
 </html>
