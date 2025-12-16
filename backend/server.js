@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const puppeteer = require('puppeteer-core');
 const chromium = require('@sparticuz/chromium');
+const fs = require('fs');
+const path = require('path');
 
 let browser;
 
@@ -16,6 +18,25 @@ async function getBrowser() {
     });
   }
   return browser;
+}
+
+/* ================= CLEANUP OLD FILES ================= */
+function cleanupOldFiles(dir, maxAgeMinutes = 30) {
+  if (!fs.existsSync(dir)) return;
+  
+  const now = Date.now();
+  fs.readdirSync(dir).forEach(file => {
+    const filePath = path.join(dir, file);
+    try {
+      const stats = fs.statSync(filePath);
+      if (now - stats.mtimeMs > maxAgeMinutes * 60 * 1000) {
+        fs.unlinkSync(filePath);
+        console.log(`🗑️ Deleted old file: ${file}`);
+      }
+    } catch (err) {
+      console.error(`Error cleaning up ${file}:`, err.message);
+    }
+  });
 }
 
 const app = express();
@@ -82,7 +103,7 @@ app.post('/generate', async (req, res) => {
     const roundoff = +(total - gross).toFixed(2);
 
     /* ================= DUMMY ROWS ================= */
-    const ROWS_PER_PAGE = 35; // perfect for A4 @ 10px font
+    const ROWS_PER_PAGE = 35;
     const itemsWithDummies = [...cleanItems];
 
     const dummyCount = ROWS_PER_PAGE - cleanItems.length;
@@ -113,7 +134,7 @@ app.post('/generate', async (req, res) => {
 
 @font-face {
   font-family: 'NotoDeva';
-  src: url('https://fonts.gstatic.com/s/notosansdevanagari/v25/xH2vF5pWnGCMpU5QIauqfBCF6f4.0.woff2') format('woff2');
+  src: url('https://fonts.gstatic.com/s/notosansdevanagari/v25/xH2vF5pWnGCMpU5QIauqfBCF6f4.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -158,7 +179,7 @@ body {
   font-weight: bold;
   color: red;
 }
-/* PARTY TABLE *
+
 /* BOX */
 .box {
   width: 100%;
@@ -174,6 +195,7 @@ body {
   font-weight: bold;
   font-size: 18px;
 }
+
 /* ITEMS TABLE */
 .items {
   width: 100%;
@@ -201,7 +223,7 @@ body {
 }
 
 .items tbody tr {
-  height: 18px; /* 🔥 important for dummy rows */
+  height: 18px;
 }
 
 .items tr {
@@ -211,9 +233,9 @@ body {
 .items td {
   word-break: break-word;
 }
-/* TOTAL LINE ABOVE */
+
 .items tfoot .total-row td {
-  border-top: 2px solid #000;   /* 🔥 line above Total */
+  border-top: 2px solid #000;
   font-weight: bold;
   padding-top: 4px;
 }
@@ -299,10 +321,9 @@ body {
         <td class="r">${roundoff.toFixed(2)}</td>
       </tr>
       <tr class="total-row">
-       <td>Total</td><td></td><td></td><td></td>
+        <td>Total</td><td></td><td></td><td></td>
         <td class="r">Rs.${total.toLocaleString('en-IN')}</td>
       </tr>
-
     </tfoot>
   </table>
 
@@ -327,24 +348,59 @@ body {
 
     const browser = await getBrowser();
     const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'load' });
 
-    const pdf = await page.pdf({
-      format: 'A4',
-      printBackground: true
-    });
+    try {
+      // 🔥 CRITICAL: Wait for fonts to load
+      await page.setContent(html, { waitUntil: 'networkidle0' });
 
-    await page.close();
+      const pdf = await page.pdf({
+        format: 'A4',
+        printBackground: true
+      });
 
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Content-Disposition', `attachment; filename="Invoice_${invoice_no}.pdf"`);
+      /* ================= SAVE TO TEMP FOLDER ================= */
+      const fileName = `Invoice_${invoice_no}_${Date.now()}.pdf`;
+      const dir = path.join(__dirname, 'tmp');
 
-    res.end(pdf);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      fs.writeFileSync(path.join(dir, fileName), pdf);
+      console.log(`✅ PDF saved: ${fileName}`);
+
+      // 🔥 CLEANUP OLD FILES
+      cleanupOldFiles(dir);
+
+      // 🔥 RETURN URL, NOT PDF
+      res.json({
+        url: `https://invoice2-uu6l.onrender.com/download/${fileName}`
+      });
+
+    } finally {
+      // 🔥 CRITICAL: Always close page to prevent memory leaks
+      await page.close();
+    }
 
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'PDF generation failed' });
   }
+});
+
+/* ================= DOWNLOAD ROUTE ================= */
+app.get('/download/:file', (req, res) => {
+  const filePath = path.join(__dirname, 'tmp', req.params.file);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ error: 'File not found' });
+  }
+
+  res.download(filePath, (err) => {
+    if (err) {
+      console.error('Download error:', err);
+    }
+  });
 });
 
 /* ================= NUMBER TO WORDS ================= */
@@ -370,7 +426,7 @@ function numberToWords(num) {
   return result.trim();
 }
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`✅ Invoice server running on port ${PORT}`);
 });

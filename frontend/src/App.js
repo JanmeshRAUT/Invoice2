@@ -86,29 +86,15 @@ export default function App() {
         `${apiUrl}/generate`,
         { ...form, items },
         {
-          responseType: 'blob',
-          timeout: 60000,
-          headers: {
-            Accept: 'application/pdf'
-          }
+          timeout: 60000
         }
       );
 
-      const pdfBlob = new Blob([res.data], {
-        type: 'application/pdf'
-      });
-
-      const url = window.URL.createObjectURL(pdfBlob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Invoice_${form.invoice_no}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
+      // 🔥 OPEN DOWNLOAD LINK
+      window.location.href = res.data.url;
 
     } catch (err) {
-      alert('❌ Failed to generate invoice');
+      alert('❌ Backend is waking up. Try again in a moment.');
       console.error(err);
     }
 
@@ -135,6 +121,7 @@ export default function App() {
       </div>
 
       {/* ---------- FORM ---------- */}
+      
       <div className="form-panel card">
         <h3>Invoice Generator</h3>
 
