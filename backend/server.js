@@ -12,6 +12,11 @@ const devanagariFontPath = path
   .join(__dirname, 'fonts', 'NotoSansDevanagari-VariableFont_wdth,wght.ttf')
   .replace(/\\/g, '/');
 
+// Read font file and convert to base64 for Puppeteer PDF rendering
+const fontBuffer = fs.readFileSync(devanagariFontPath);
+const fontBase64 = fontBuffer.toString('base64');
+const devanagariFontDataUrl = `data:font/truetype;base64,${fontBase64}`;
+
 /* ================= REUSABLE BROWSER INSTANCE ================= */
 async function getBrowser() {
   if (!browser) {
@@ -161,8 +166,8 @@ app.post('/generate', async (req, res) => {
 
     /* ================= SELECT TEMPLATE ================= */
     const html = invoice_type === 'sand'
-      ? generateSandInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontPath)
-      : generateSimpleInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontPath);
+      ? generateSandInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontDataUrl)
+      : generateSimpleInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontDataUrl);
 
     /* ================= GENERATE PDF ================= */
     const browser = await getBrowser();
