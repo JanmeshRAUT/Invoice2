@@ -6,6 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 
+/* ================= HEALTH CHECK ================= */
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.post('/generate', async (req, res) => {
   try {
     const {

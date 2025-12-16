@@ -28,7 +28,7 @@ export default function App() {
       const url = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       setApiUrl(url);
       try {
-        await axios.get(`${url}/generate`, { timeout: 3000 });
+        await axios.get(`${url}/health`, { timeout: 3000 });
         setConnected(true);
       } catch {
         setConnected(false);
