@@ -3,7 +3,13 @@ const cors = require('cors');
 const puppeteer = require('puppeteer');
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'https://igeneator.netlify.app'
+  ]
+}));
 app.use(express.json({ limit: '2mb' }));
 
 /* ================= HEALTH CHECK ================= */

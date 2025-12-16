@@ -25,7 +25,18 @@ export default function App() {
   /* ---------------- CHECK CONNECTION ON MOUNT ---------------- */
   useEffect(() => {
     const checkConnection = async () => {
-      const url = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const url =
+        process.env.REACT_APP_API_URL ||
+        (window.location.hostname === 'localhost'
+          ? 'http://localhost:5000'
+          : '');
+
+      if (!url) {
+        setConnected(false);
+        setApiUrl('');
+        return;
+      }
+
       setApiUrl(url);
       try {
         await axios.get(`${url}/health`, { timeout: 3000 });
@@ -73,7 +84,11 @@ export default function App() {
       const res = await axios.post(
         `${apiUrl}/generate`,
         { ...form, items },
-        { responseType: 'blob' }
+        {
+          responseType: 'blob',
+          timeout: 60000,
+          headers: { Accept: 'application/pdf' }
+        }
       );
 
       const url = URL.createObjectURL(new Blob([res.data]));
