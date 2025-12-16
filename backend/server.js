@@ -29,13 +29,13 @@ app.use(cors({
 // 🔥 CRITICAL: Handle preflight requests
 app.options('*', cors());
 
-/* ================= LOGGING MIDDLEWARE ================= */
+app.use(express.json({ limit: '2mb' }));
+
+/* ---------- DEBUG LOGGER ---------- */
 app.use((req, res, next) => {
   console.log(`➡️ ${req.method} ${req.path}`);
   next();
 });
-
-app.use(express.json({ limit: '2mb' });
 
 /* ================= HEALTH CHECK ================= */
 app.get('/health', (req, res) => {
