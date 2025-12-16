@@ -1,0 +1,4 @@
+Flask
+python-docx
+num2words
+docx2pdf

@@ -1,0 +1,186 @@
+import { useState, useRef } from 'react';
+import axios from 'axios';
+import './App.css';
+
+export default function App() {
+
+  /* ---------------- FORM STATE ---------------- */
+  const [form, setForm] = useState({
+    invoice_no: '',
+    invoice_date: new Date().toISOString().split('T')[0],
+    party_name: '',
+    party_address: '',
+    party_gstin: ''
+  });
+
+  const [items, setItems] = useState([
+    { desc: 'JK Laxmi Cement', hsn: '25232930', qty: '', rate: '' }
+  ]);
+
+  const [loading, setLoading] = useState(false);
+  const previewRef = useRef(null);
+
+  /* ---------------- HANDLERS ---------------- */
+  const changeForm = e =>
+    setForm({ ...form, [e.target.name]: e.target.value });
+
+  const changeItem = (i, key, val) => {
+    const copy = [...items];
+    copy[i][key] = val;
+    setItems(copy);
+  };
+
+  const addItem = () =>
+    setItems([...items, { desc: '', hsn: '', qty: '', rate: '' }]);
+
+  /* ---------------- CALCULATIONS ---------------- */
+  const subtotal = items.reduce(
+    (s, i) => s + (Number(i.qty) || 0) * (Number(i.rate) || 0),
+    0
+  );
+  const cgst = +(subtotal * 0.09).toFixed(2);
+  const sgst = +(subtotal * 0.09).toFixed(2);
+  const total = Math.round(subtotal + cgst + sgst);
+
+  const numToWords = n =>
+    n === 0 ? 'Zero' : n.toLocaleString('en-IN');
+
+  /* ---------------- SUBMIT ---------------- */
+  const submit = async e => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const res = await axios.post(
+        `${apiUrl}/generate`,
+        { ...form, items },
+        { responseType: 'blob' }
+      );
+
+      const url = URL.createObjectURL(new Blob([res.data]));
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Invoice_${form.invoice_no}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+
+    } catch (err) {
+      alert('Failed to generate invoice');
+      console.error(err);
+    }
+
+    setLoading(false);
+  };
+
+  /* ---------------- UI ---------------- */
+  return (
+    <div className="layout">
+
+      {/* ---------- FORM ---------- */}
+      <div className="form-panel card">
+        <h3>Invoice Generator</h3>
+
+        <form onSubmit={submit}>
+          <input name="invoice_no" placeholder="Invoice No" onChange={changeForm} required />
+          <input type="date" name="invoice_date" value={form.invoice_date} onChange={changeForm} />
+          <input name="party_name" placeholder="Party Name" onChange={changeForm} required />
+          <input name="party_address" placeholder="Party Address" onChange={changeForm} />
+          <input name="party_gstin" placeholder="Party GSTIN" onChange={changeForm} />
+
+          <h4>Items</h4>
+          {items.map((it, i) => (
+            <div key={i} className="row">
+              <input placeholder="Description" value={it.desc} onChange={e => changeItem(i,'desc',e.target.value)} />
+              <input placeholder="HSN" value={it.hsn} onChange={e => changeItem(i,'hsn',e.target.value)} />
+              <input type="number" placeholder="Qty" value={it.qty} onChange={e => changeItem(i,'qty',e.target.value)} />
+              <input type="number" placeholder="Rate" value={it.rate} onChange={e => changeItem(i,'rate',e.target.value)} />
+            </div>
+          ))}
+
+          <button type="button" onClick={addItem}>+ Add Item</button>
+
+          <button disabled={loading}>
+            {loading ? 'Generating...' : 'Generate PDF'}
+          </button>
+        </form>
+      </div>
+
+      {/* ---------- PREVIEW ---------- */}
+      <div className="preview-panel card">
+        <div className="preview-header">
+          <h4>Invoice Preview</h4>
+        </div>
+
+        <div ref={previewRef}>
+
+          <div style={{ textAlign:'center' }}>
+            <div style={{ fontSize:20, fontWeight:700 }}>श्री</div>
+            <div style={{ fontSize:18, fontWeight:700 }}>SHREE SADGURU KRUPA ENTERPRISES</div>
+            <div>At- Sarpada Post-Umroli, Palghar, Maharashtra</div>
+            <div><b>GSTIN:</b> 27ASKPP5407C1ZS</div>
+            <div style={{ marginTop:8, fontWeight:700 }}>TAX INVOICE</div>
+          </div>
+
+          <table style={{ width:'100%', marginTop:12 }} border="1">
+            <tbody>
+              <tr>
+                <td width="60%">
+                  <b>Party Details</b><br/>
+                  {form.party_name}<br/>
+                  {form.party_address}<br/>
+                  <b>GSTIN:</b> {form.party_gstin}
+                </td>
+                <td width="40%">
+                  <b>Invoice No:</b> {form.invoice_no}<br/>
+                  <b>Date:</b> {form.invoice_date}<br/>
+                  <b>State:</b> Maharashtra<br/>
+                  <b>Code:</b> 27
+                </td>
+
+              </tr>
+            </tbody>
+          </table>  
+
+          <table style={{ width:'100%', marginTop:12 }} border="1">
+            <thead>
+              <tr>
+                <th>Description</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((it,i)=>(
+                <tr key={i}>
+                  <td>{it.desc}</td>
+                  <td>{it.hsn}</td>
+                  <td align="right">{it.qty}</td>
+                  <td align="right">{Number(it.rate||0).toFixed(2)}</td>
+                  <td align="right">{(it.qty*it.rate||0).toFixed(2)}</td>
+                </tr>
+              ))}
+              <tr><td>CGST 9%</td><td></td><td></td><td></td><td align="right">{cgst}</td></tr>
+              <tr><td>SGST 9%</td><td></td><td></td><td></td><td align="right">{sgst}</td></tr>
+              <tr style={{ fontWeight:700 }}><td>TOTAL</td><td></td><td></td><td></td><td align="right">{total}</td></tr>
+            </tbody>
+          </table>
+
+          <table style={{ width:'100%', marginTop:12 }} border="1">
+            <tbody>
+              <tr>
+                <td width="60%">
+                  <b>Amount in Words</b><br/>
+                  {numToWords(total)} Rupees Only
+                </td>
+                <td width="40%" align="center">
+                  <b>For SHREE SADGURU KRUPA ENTERPRISES</b><br/><br/>
+                  Proprietor
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  );
+}
