@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
@@ -18,7 +18,26 @@ export default function App() {
   ]);
 
   const [loading, setLoading] = useState(false);
+  const [connected, setConnected] = useState(false);
+  const [apiUrl, setApiUrl] = useState('');
   const previewRef = useRef(null);
+
+  /* ---------------- CHECK CONNECTION ON MOUNT ---------------- */
+  useEffect(() => {
+    const checkConnection = async () => {
+      const url = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      setApiUrl(url);
+      try {
+        await axios.get(`${url}/generate`, { timeout: 3000 });
+        setConnected(true);
+      } catch {
+        setConnected(false);
+      }
+    };
+    checkConnection();
+    const interval = setInterval(checkConnection, 10000); // Check every 10 seconds
+    return () => clearInterval(interval);
+  }, []);
 
   /* ---------------- HANDLERS ---------------- */
   const changeForm = e =>
@@ -51,7 +70,6 @@ export default function App() {
     setLoading(true);
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const res = await axios.post(
         `${apiUrl}/generate`,
         { ...form, items },
@@ -76,6 +94,25 @@ export default function App() {
   /* ---------------- UI ---------------- */
   return (
     <div className="layout">
+
+      {/* ---------- STATUS BAR ---------- */}
+      <div style={{
+        padding: '12px 20px',
+        backgroundColor: connected ? '#d4edda' : '#f8d7da',
+        borderBottom: '2px solid ' + (connected ? '#28a745' : '#dc3545'),
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontWeight: 'bold',
+        color: connected ? '#155724' : '#721c24'
+      }}>
+        <div>
+          {connected ? '✅ Connected' : '❌ Disconnected'}
+        </div>
+        <div style={{ fontSize: '12px' }}>
+          Backend: {apiUrl}
+        </div>
+      </div>
 
       {/* ---------- FORM ---------- */}
       <div className="form-panel card">
