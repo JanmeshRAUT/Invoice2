@@ -332,5 +332,5 @@ function numberToWords(num) {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`✅ Invoice server running at http://localhost:${PORT}`);
+  console.log(`✅ Invoice server running on port ${PORT}`);
 });
