@@ -11,7 +11,8 @@
     "cors": "^2.8.5",
     "express": "^4.22.1",
     "pdfkit": "^0.13.0",
-    "puppeteer": "^24.33.0",
+    "puppeteer-core": "^24.33.0",
+    "@sparticuz/chromium": "^130.0.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

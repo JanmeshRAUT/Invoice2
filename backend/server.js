@@ -1,6 +1,22 @@
 const express = require('express');
 const cors = require('cors');
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('@sparticuz/chromium');
+
+let browser;
+
+/* ================= REUSABLE BROWSER INSTANCE ================= */
+async function getBrowser() {
+  if (!browser) {
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless
+    });
+  }
+  return browser;
+}
 
 const app = express();
 app.use(cors({
@@ -287,11 +303,7 @@ body {
 </html>
 `;
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    });
-
+    const browser = await getBrowser();
     const page = await browser.newPage();
     await page.setContent(html, { waitUntil: 'load' });
 
@@ -300,7 +312,7 @@ body {
       printBackground: true
     });
 
-    await browser.close();
+    await page.close();
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="Invoice_${invoice_no}.pdf"`);
