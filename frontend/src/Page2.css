@@ -1,0 +1,464 @@
+/* ========================================
+   PAGE 2 - SAND/CONCRETE INVOICE FORMAT
+   ======================================== */
+
+.page2-layout {
+  min-height: 100vh;
+  background: var(--gray-50);
+  padding: 0;
+  padding-bottom: 50px;
+}
+
+@media (min-width: 769px) {
+  .page2-layout {
+    padding-bottom: 60px;
+  }
+}
+
+/* ========================================
+   BACK BUTTON
+   ======================================== */
+
+.back-nav-button {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 200;
+  background: white;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-sm);
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.back-nav-button:hover {
+  background: var(--primary);
+  color: white;
+  transform: translateX(-2px);
+}
+
+.back-nav-button:active {
+  transform: translateX(0);
+}
+
+@media (min-width: 769px) {
+  .back-nav-button {
+    top: 20px;
+    left: 20px;
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .back-nav-button {
+    padding: 5px 8px;
+    font-size: 11px;
+    top: 8px;
+    left: 8px;
+  }
+}
+
+/* ========================================
+   LAYOUT OVERRIDE FOR PAGE2
+   ======================================== */
+
+.page2-layout .layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--gray-50);
+  gap: 0;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .page2-layout .layout {
+    flex-direction: row;
+    gap: 24px;
+    padding: 24px;
+    max-width: 100%;
+    min-height: calc(100vh - 50px);
+  }
+}
+
+@media (min-width: 1024px) and (min-width: 769px) {
+  .page2-layout .layout {
+    min-height: calc(100vh - 60px);
+  }
+}
+
+/* ========================================
+   FORM PANEL (PAGE2)
+   ======================================== */
+
+.page2-layout .card {
+  width: 100%;
+  padding: 20px;
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .page2-layout .card {
+    width: 400px;
+    max-width: 400px;
+    padding: 0;
+    margin: 0;
+    flex-shrink: 0;
+    overflow-y: auto;
+    max-height: calc(100vh - 48px);
+  }
+}
+
+.page2-layout .card h3 {
+  margin: 0 0 20px 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--gray-900);
+  letter-spacing: -0.5px;
+}
+
+.page2-layout .card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.page2-layout .card h4 {
+  font-size: 13px;
+  color: var(--gray-600);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 20px 0 12px 0;
+}
+
+/* ========================================
+   FORM INPUTS (PAGE2)
+   ======================================== */
+
+.page2-layout .card input {
+  width: 100%;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  border: 1px solid var(--gray-300);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--gray-800);
+  background: white;
+  transition: var(--transition);
+}
+
+.page2-layout .card input::placeholder {
+  color: var(--gray-400);
+}
+
+.page2-layout .card input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-light);
+  background: #f8fbff;
+}
+
+/* ========================================
+   ROW LAYOUT (PAGE2)
+   ======================================== */
+
+.page2-layout .row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.page2-layout .row input {
+  width: 100%;
+}
+
+@media (min-width: 641px) {
+  .page2-layout .row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page2-layout .row {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+}
+
+/* ========================================
+   BUTTONS (PAGE2)
+   ======================================== */
+
+.page2-layout button[type="button"] {
+  width: 100%;
+  padding: 11px 14px;
+  margin-top: 10px;
+  background: var(--success);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.page2-layout button[type="button"]:hover {
+  background: var(--success-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.page2-layout button[type="button"]:active {
+  transform: translateY(0);
+}
+
+.page2-layout button[type="submit"] {
+  width: 100%;
+  padding: 11px 14px;
+  margin-top: 10px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.page2-layout button[type="submit"]:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.page2-layout button[type="submit"]:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.page2-layout button[type="submit"]:disabled {
+  background: var(--gray-300);
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ========================================
+   PREVIEW PANEL (PAGE2)
+   ======================================== */
+
+.page2-layout .preview {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  .page2-layout .preview {
+    flex: 1;
+    width: auto;
+    min-width: 600px;
+    padding: 0;
+  }
+}
+
+/* ========================================
+   PREVIEW HEADER (PAGE2)
+   ======================================== */
+
+.page2-layout .header {
+  text-align: center;
+  border-bottom: 2px solid #000;
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.page2-layout .shree {
+  font-size: 18px;
+  font-weight: bold;
+  color: red;
+  margin-bottom: 4px;
+  font-family: 'NotoDeva', Arial, sans-serif;
+}
+
+.page2-layout .firm {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.page2-layout .gst {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 4px 0;
+}
+
+.page2-layout .header h3 {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 12px 0 0 0;
+  color: #000;
+}
+
+.page2-layout .header hr {
+  margin: 8px 0;
+}
+
+/* ========================================
+   PREVIEW TABLES (PAGE2)
+   ======================================== */
+
+.page2-layout table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+@media (min-width: 1024px) {
+  .page2-layout table {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+}
+
+.page2-layout table td,
+.page2-layout table th {
+  border: 1px solid #000;
+  padding: 6px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.page2-layout table th {
+  background: #f0f0f0;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+@media (min-width: 1024px) {
+  .page2-layout table th {
+    font-size: 12px;
+    padding: 8px;
+  }
+  
+  .page2-layout table td {
+    padding: 8px;
+  }
+}
+
+.page2-layout table.totals {
+  margin-top: 16px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.page2-layout table.totals td {
+  padding: 4px 8px;
+  border: 1px solid #000;
+}
+
+.page2-layout table.totals tr.grand td {
+  font-weight: bold;
+  background: #e0e0e0;
+  font-size: 13px;
+}
+
+@media (min-width: 1024px) {
+  .page2-layout table.totals tr.grand td {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
+/* ========================================
+   STATUS BAR (PAGE2)
+   ======================================== */
+
+.page2-layout .status {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  min-height: 50px;
+  background: #fff;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+@media (min-width: 769px) {
+  .page2-layout .status {
+    min-height: 60px;
+    font-size: 13px;
+  }
+}
+
+.page2-layout .status.ok {
+  background: linear-gradient(135deg, #f0fdf4 0%, #f0fff4 100%);
+  border-bottom-color: #86efac;
+  color: #166534;
+}
+
+.page2-layout .status.wait {
+  background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
+  border-bottom-color: #fca5a5;
+  color: #7c2d12;
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 640px) {
+  .page2-layout .card h3 {
+    font-size: 20px;
+  }
+
+  .page2-layout table {
+    font-size: 10px;
+  }
+
+  .page2-layout table td,
+  .page2-layout table th {
+    padding: 4px 2px;
+  }
+
+  .page2-layout button {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+}

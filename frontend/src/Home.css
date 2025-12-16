@@ -1,0 +1,155 @@
+/* ========================================
+   HOME PAGE STYLES
+   ======================================== */
+
+.home-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.home-content {
+  max-width: 1000px;
+  width: 100%;
+}
+
+.home-header {
+  text-align: center;
+  color: white;
+  margin-bottom: 50px;
+}
+
+.home-header h1 {
+  font-size: 48px;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  letter-spacing: -1px;
+}
+
+.home-header p {
+  font-size: 18px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+/* ========================================
+   CARDS GRID
+   ======================================== */
+
+.home-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-bottom: 50px;
+}
+
+@media (min-width: 768px) {
+  .home-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+}
+
+.home-card {
+  background: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+}
+
+.home-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.25);
+  border-color: #667eea;
+}
+
+.card-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.home-card h2 {
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #111827;
+  letter-spacing: -0.5px;
+}
+
+.home-card p {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+.card-button {
+  width: 100%;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.card-button:active {
+  transform: scale(0.98);
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+
+.home-footer {
+  text-align: center;
+  color: white;
+  opacity: 0.8;
+  font-size: 14px;
+}
+
+.home-footer p {
+  margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 640px) {
+  .home-header h1 {
+    font-size: 32px;
+  }
+
+  .home-header p {
+    font-size: 16px;
+  }
+
+  .home-card {
+    padding: 24px;
+  }
+
+  .card-icon {
+    font-size: 40px;
+  }
+
+  .home-card h2 {
+    font-size: 20px;
+  }
+}

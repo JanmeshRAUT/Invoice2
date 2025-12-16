@@ -84,7 +84,7 @@ export default function App() {
     try {
       const res = await axios.post(
         `${apiUrl}/generate`,
-        { ...form, items },
+        { invoice_type: 'simple', ...form, items },
         {
           timeout: 60000
         }
