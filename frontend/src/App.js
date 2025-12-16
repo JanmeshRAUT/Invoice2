@@ -121,13 +121,16 @@ export default function App() {
 
       {/* ---------- STATUS BAR ---------- */}
       <div className={`status-bar ${connected ? 'connected' : 'disconnected'}`}>
-        <div className="status-bar-left">
-          <span>
-            {connected ? '🟢 Backend Ready' : '🟡 Backend Warming Up…'}
-          </span>
-        </div>
-        <div className="status-bar-right">
-          Backend: {apiUrl}
+        <div className="status-bar-content">
+          <div className="status-indicator">
+            <span className="status-dot"></span>
+            <div className="status-info">
+              <p className="status-label">
+                {connected ? 'Backend Connected' : 'Backend Connecting...'}
+              </p>
+              <p className="status-url">{apiUrl}</p>
+            </div>
+          </div>
         </div>
       </div>
 
