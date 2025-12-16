@@ -110,6 +110,12 @@ app.post('/generate', async (req, res) => {
   size: A4;
   margin: 10mm;
 }
+@font-face {
+  font-family: 'NotoDeva';
+  src: url('file:///opt/render/project/src/backend/fonts/NotoSansDevanagari-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
 
 * {
   box-sizing: border-box;
@@ -121,6 +127,11 @@ body {
   font-family: Arial, sans-serif;
   font-size: 12px;
   color: #000;
+}
+.deva {
+  font-family: 'NotoDeva', sans-serif;
+  font-size: 18px;
+  font-weight: bold;
 }
 
 /* PAGE */
@@ -226,7 +237,7 @@ body {
 
   <!-- HEADER -->
   <div class="header">
-    <div class="header-marked">|| श्री ||</div>
+    <div class="header-marked deva">|| श्री ||</div>
     <div class="header-title">SHREE SADGURU KRUPA ENTERPRISES</div>
     <div>At- Sarpada Post-Umroli, Palghar, Maharashtra</div>
     <div><b>GSTIN :</b> 27ASKPP5407C1ZS</div>
