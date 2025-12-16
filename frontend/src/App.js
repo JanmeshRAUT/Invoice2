@@ -22,20 +22,31 @@ export default function App() {
   const [apiUrl, setApiUrl] = useState('');
   const previewRef = useRef(null);
 
-  /* ---------------- CHECK CONNECTION ON MOUNT ---------------- */
+  /* ---------------- HEALTH CHECK (RENDER SAFE) ---------------- */
   useEffect(() => {
     const checkConnection = async () => {
       const url = 'https://invoice2-uu6l.onrender.com';
       setApiUrl(url);
+
       try {
-        await axios.get(`${url}/health`, { timeout: 3000 });
+        await axios.get(`${url}/health`, {
+          timeout: 15000 // Render cold start safe
+        });
         setConnected(true);
-      } catch {
-        setConnected(false);
+      } catch (err) {
+        // Treat timeout as warming up (NOT failure)
+        if (err.code === 'ECONNABORTED') {
+          setConnected(true);
+        } else {
+          setConnected(false);
+        }
       }
     };
+
     checkConnection();
-    const interval = setInterval(checkConnection, 10000); // Check every 10 seconds
+
+    // Do NOT ping Render too frequently
+    const interval = setInterval(checkConnection, 60000);
     return () => clearInterval(interval);
   }, []);
 
@@ -57,6 +68,7 @@ export default function App() {
     (s, i) => s + (Number(i.qty) || 0) * (Number(i.rate) || 0),
     0
   );
+
   const cgst = +(subtotal * 0.09).toFixed(2);
   const sgst = +(subtotal * 0.09).toFixed(2);
   const total = Math.round(subtotal + cgst + sgst);
@@ -64,7 +76,7 @@ export default function App() {
   const numToWords = n =>
     n === 0 ? 'Zero' : n.toLocaleString('en-IN');
 
-  /* ---------------- SUBMIT ---------------- */
+  /* ---------------- SUBMIT (PDF DOWNLOAD) ---------------- */
   const submit = async e => {
     e.preventDefault();
     setLoading(true);
@@ -76,19 +88,27 @@ export default function App() {
         {
           responseType: 'blob',
           timeout: 60000,
-          headers: { Accept: 'application/pdf' }
+          headers: {
+            Accept: 'application/pdf'
+          }
         }
       );
 
-      const url = URL.createObjectURL(new Blob([res.data]));
+      const pdfBlob = new Blob([res.data], {
+        type: 'application/pdf'
+      });
+
+      const url = window.URL.createObjectURL(pdfBlob);
       const a = document.createElement('a');
       a.href = url;
       a.download = `Invoice_${form.invoice_no}.pdf`;
+      document.body.appendChild(a);
       a.click();
-      URL.revokeObjectURL(url);
+      a.remove();
+      window.URL.revokeObjectURL(url);
 
     } catch (err) {
-      alert('Failed to generate invoice');
+      alert('❌ Failed to generate invoice');
       console.error(err);
     }
 
@@ -102,7 +122,9 @@ export default function App() {
       {/* ---------- STATUS BAR ---------- */}
       <div className={`status-bar ${connected ? 'connected' : 'disconnected'}`}>
         <div className="status-bar-left">
-          <span>{connected ? '✅ Connected' : '❌ Disconnected'}</span>
+          <span>
+            {connected ? '🟢 Backend Ready' : '🟡 Backend Warming Up…'}
+          </span>
         </div>
         <div className="status-bar-right">
           Backend: {apiUrl}
@@ -123,96 +145,105 @@ export default function App() {
           <h4>Items</h4>
           {items.map((it, i) => (
             <div key={i} className="row">
-              <input placeholder="Description" value={it.desc} onChange={e => changeItem(i,'desc',e.target.value)} />
-              <input placeholder="HSN" value={it.hsn} onChange={e => changeItem(i,'hsn',e.target.value)} />
-              <input type="number" placeholder="Qty" value={it.qty} onChange={e => changeItem(i,'qty',e.target.value)} />
-              <input type="number" placeholder="Rate" value={it.rate} onChange={e => changeItem(i,'rate',e.target.value)} />
+              <input placeholder="Description" value={it.desc}
+                onChange={e => changeItem(i, 'desc', e.target.value)} />
+              <input placeholder="HSN" value={it.hsn}
+                onChange={e => changeItem(i, 'hsn', e.target.value)} />
+              <input type="number" placeholder="Qty" value={it.qty}
+                onChange={e => changeItem(i, 'qty', e.target.value)} />
+              <input type="number" placeholder="Rate" value={it.rate}
+                onChange={e => changeItem(i, 'rate', e.target.value)} />
             </div>
           ))}
 
           <button type="button" onClick={addItem}>+ Add Item</button>
 
           <button disabled={loading}>
-            {loading ? 'Generating...' : 'Generate PDF'}
+            {loading ? 'Generating PDF…' : 'Generate PDF'}
           </button>
         </form>
       </div>
 
       {/* ---------- PREVIEW ---------- */}
       <div className="preview-panel card">
-        <div className="preview-header">
-          <h4>Invoice Preview</h4>
-        </div>
+        <h4>Invoice Preview</h4>
 
         <div ref={previewRef}>
-
-          <div style={{ textAlign:'center' }}>
-            <div style={{ fontSize:20, fontWeight:700 }}>श्री</div>
-            <div style={{ fontSize:18, fontWeight:700 }}>SHREE SADGURU KRUPA ENTERPRISES</div>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 20, fontWeight: 700 }}>श्री</div>
+            <div style={{ fontSize: 18, fontWeight: 700 }}>
+              SHREE SADGURU KRUPA ENTERPRISES
+            </div>
             <div>At- Sarpada Post-Umroli, Palghar, Maharashtra</div>
             <div><b>GSTIN:</b> 27ASKPP5407C1ZS</div>
-            <div style={{ marginTop:8, fontWeight:700 }}>TAX INVOICE</div>
+            <div style={{ marginTop: 8, fontWeight: 700 }}>TAX INVOICE</div>
           </div>
 
-          <table style={{ width:'100%', marginTop:12 }} border="1">
+          <table width="100%" border="1" style={{ marginTop: 12 }}>
             <tbody>
               <tr>
                 <td width="60%">
-                  <b>Party Details</b><br/>
-                  {form.party_name}<br/>
-                  {form.party_address}<br/>
+                  <b>Party</b><br />
+                  {form.party_name}<br />
+                  {form.party_address}<br />
                   <b>GSTIN:</b> {form.party_gstin}
                 </td>
                 <td width="40%">
-                  <b>Invoice No:</b> {form.invoice_no}<br/>
-                  <b>Date:</b> {form.invoice_date}<br/>
-                  <b>State:</b> Maharashtra<br/>
+                  <b>Invoice No:</b> {form.invoice_no}<br />
+                  <b>Date:</b> {form.invoice_date}<br />
+                  <b>State:</b> Maharashtra<br />
                   <b>Code:</b> 27
                 </td>
-
               </tr>
             </tbody>
-          </table>  
+          </table>
 
-          <table style={{ width:'100%', marginTop:12 }} border="1">
+          <table width="100%" border="1" style={{ marginTop: 12 }}>
             <thead>
               <tr>
-                <th>Description</th><th>HSN</th><th>Qty</th><th>Rate</th><th>Amount</th>
+                <th>Description</th>
+                <th>HSN</th>
+                <th>Qty</th>
+                <th>Rate</th>
+                <th>Amount</th>
               </tr>
             </thead>
             <tbody>
-              {items.map((it,i)=>(
+              {items.map((it, i) => (
                 <tr key={i}>
                   <td>{it.desc}</td>
                   <td>{it.hsn}</td>
                   <td align="right">{it.qty}</td>
-                  <td align="right">{Number(it.rate||0).toFixed(2)}</td>
-                  <td align="right">{(it.qty*it.rate||0).toFixed(2)}</td>
+                  <td align="right">{Number(it.rate || 0).toFixed(2)}</td>
+                  <td align="right">{((it.qty || 0) * (it.rate || 0)).toFixed(2)}</td>
                 </tr>
               ))}
               <tr><td>CGST 9%</td><td></td><td></td><td></td><td align="right">{cgst}</td></tr>
               <tr><td>SGST 9%</td><td></td><td></td><td></td><td align="right">{sgst}</td></tr>
-              <tr style={{ fontWeight:700 }}><td>TOTAL</td><td></td><td></td><td></td><td align="right">{total}</td></tr>
+              <tr style={{ fontWeight: 700 }}>
+                <td>TOTAL</td><td></td><td></td><td></td>
+                <td align="right">{total}</td>
+              </tr>
             </tbody>
           </table>
 
-          <table style={{ width:'100%', marginTop:12 }} border="1">
+          <table width="100%" border="1" style={{ marginTop: 12 }}>
             <tbody>
               <tr>
                 <td width="60%">
-                  <b>Amount in Words</b><br/>
+                  <b>Amount in Words</b><br />
                   {numToWords(total)} Rupees Only
                 </td>
                 <td width="40%" align="center">
-                  <b>For SHREE SADGURU KRUPA ENTERPRISES</b><br/><br/>
+                  <b>For SHREE SADGURU KRUPA ENTERPRISES</b><br /><br />
                   Proprietor
                 </td>
               </tr>
             </tbody>
           </table>
-
         </div>
       </div>
+
     </div>
   );
 }
