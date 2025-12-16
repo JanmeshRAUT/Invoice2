@@ -96,20 +96,11 @@ export default function App() {
     <div className="layout">
 
       {/* ---------- STATUS BAR ---------- */}
-      <div style={{
-        padding: '12px 20px',
-        backgroundColor: connected ? '#d4edda' : '#f8d7da',
-        borderBottom: '2px solid ' + (connected ? '#28a745' : '#dc3545'),
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        fontWeight: 'bold',
-        color: connected ? '#155724' : '#721c24'
-      }}>
-        <div>
-          {connected ? '✅ Connected' : '❌ Disconnected'}
+      <div className={`status-bar ${connected ? 'connected' : 'disconnected'}`}>
+        <div className="status-bar-left">
+          <span>{connected ? '✅ Connected' : '❌ Disconnected'}</span>
         </div>
-        <div style={{ fontSize: '12px' }}>
+        <div className="status-bar-right">
           Backend: {apiUrl}
         </div>
       </div>
