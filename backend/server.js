@@ -20,13 +20,22 @@ async function getBrowser() {
 
 const app = express();
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5000',
-    'https://igeneator.netlify.app'
-  ]
+  origin: 'https://invoice2-eosin.vercel.app',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept'],
+  credentials: true
 }));
-app.use(express.json({ limit: '2mb' }));
+
+// 🔥 CRITICAL: Handle preflight requests
+app.options('*', cors());
+
+/* ================= LOGGING MIDDLEWARE ================= */
+app.use((req, res, next) => {
+  console.log(`➡️ ${req.method} ${req.path}`);
+  next();
+});
+
+app.use(express.json({ limit: '2mb' });
 
 /* ================= HEALTH CHECK ================= */
 app.get('/health', (req, res) => {
