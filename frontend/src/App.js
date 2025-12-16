@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
@@ -20,7 +20,6 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [connected, setConnected] = useState(false);
   const [apiUrl, setApiUrl] = useState('');
-  const previewRef = useRef(null);
 
   /* ---------------- HEALTH CHECK (RENDER SAFE) ---------------- */
   useEffect(() => {
@@ -103,137 +102,119 @@ export default function App() {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="layout">
+    <>
+      <div className="app-layout">
+        <div className="layout">
 
-      {/* ---------- STATUS BAR ---------- */}
-      <div className={`status-bar ${connected ? 'connected' : 'disconnected'}`}>
-        <div className="status-bar-content">
-          <div className="status-indicator">
-            <span className="status-dot"></span>
-            <div className="status-info">
-              <p className="status-label">
-                {connected ? 'Backend Connected' : 'Backend Connecting...'}
-              </p>
-              <p className="status-url">{apiUrl}</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ---------- FORM ---------- */}
-      
-      <div className="form-panel card">
-        <h3>Invoice Generator</h3>
-
-        <form onSubmit={submit}>
-          <input name="invoice_no" placeholder="Invoice No" onChange={changeForm} required />
-          <input type="date" name="invoice_date" value={form.invoice_date} onChange={changeForm} />
-          <input name="party_name" placeholder="Party Name" onChange={changeForm} required />
-          <input name="party_address" placeholder="Party Address" onChange={changeForm} />
-          <input name="party_gstin" placeholder="Party GSTIN" onChange={changeForm} />
-
-          <h4>Items</h4>
-          {items.map((it, i) => (
-            <div key={i} className="row">
-              <input placeholder="Description" value={it.desc}
-                onChange={e => changeItem(i, 'desc', e.target.value)} />
-              <input placeholder="HSN" value={it.hsn}
-                onChange={e => changeItem(i, 'hsn', e.target.value)} />
-              <input type="number" placeholder="Qty" value={it.qty}
-                onChange={e => changeItem(i, 'qty', e.target.value)} />
-              <input type="number" placeholder="Rate" value={it.rate}
-                onChange={e => changeItem(i, 'rate', e.target.value)} />
-            </div>
-          ))}
-
-          <button type="button" onClick={addItem}>+ Add Item</button>
-
-          <button disabled={loading}>
-            {loading ? 'Generating PDF…' : 'Generate PDF'}
-          </button>
-        </form>
-      </div>
-
-      {/* ---------- PREVIEW ---------- */}
-      <div className="preview-panel card">
-        <h4>Invoice Preview</h4>
-
-        <div ref={previewRef}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 700 }}>श्री</div>
-            <div style={{ fontSize: 18, fontWeight: 700 }}>
-              SHREE SADGURU KRUPA ENTERPRISES
-            </div>
-            <div>At- Sarpada Post-Umroli, Palghar, Maharashtra</div>
-            <div><b>GSTIN:</b> 27ASKPP5407C1ZS</div>
-            <div style={{ marginTop: 8, fontWeight: 700 }}>TAX INVOICE</div>
+          {/* STATUS BAR */}
+          <div className={`status ${connected ? 'ok' : 'wait'}`}>
+            {connected ? 'Backend Connected' : 'Backend Connecting...'} — {apiUrl}
           </div>
 
-          <table width="100%" border="1" style={{ marginTop: 12 }}>
-            <tbody>
-              <tr>
-                <td width="60%">
-                  <b>Party</b><br />
-                  {form.party_name}<br />
-                  {form.party_address}<br />
-                  <b>GSTIN:</b> {form.party_gstin}
-                </td>
-                <td width="40%">
-                  <b>Invoice No:</b> {form.invoice_no}<br />
-                  <b>Date:</b> {form.invoice_date}<br />
-                  <b>State:</b> Maharashtra<br />
-                  <b>Code:</b> 27
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {/* FORM */}
+          <div className="card">
+            <h3>Invoice Generator</h3>
 
-          <table width="100%" border="1" style={{ marginTop: 12 }}>
-            <thead>
-              <tr>
-                <th>Description</th>
-                <th>HSN</th>
-                <th>Qty</th>
-                <th>Rate</th>
-                <th>Amount</th>
-              </tr>
-            </thead>
-            <tbody>
+            <form onSubmit={submit}>
+              <input name="invoice_no" placeholder="Invoice No" onChange={changeForm} required />
+              <input type="date" name="invoice_date" value={form.invoice_date} onChange={changeForm} />
+              <input name="party_name" placeholder="Party Name" onChange={changeForm} required />
+              <input name="party_address" placeholder="Party Address" onChange={changeForm} />
+              <input name="party_gstin" placeholder="Party GSTIN" onChange={changeForm} />
+
+              <h4>Items</h4>
+
               {items.map((it, i) => (
-                <tr key={i}>
-                  <td>{it.desc}</td>
-                  <td>{it.hsn}</td>
-                  <td align="right">{it.qty}</td>
-                  <td align="right">{Number(it.rate || 0).toFixed(2)}</td>
-                  <td align="right">{((it.qty || 0) * (it.rate || 0)).toFixed(2)}</td>
-                </tr>
+                <div className="row" key={i}>
+                  <input placeholder="Description" value={it.desc}
+                    onChange={e => changeItem(i, 'desc', e.target.value)} />
+                  <input placeholder="HSN" value={it.hsn}
+                    onChange={e => changeItem(i, 'hsn', e.target.value)} />
+                  <input type="number" placeholder="Qty" value={it.qty}
+                    onChange={e => changeItem(i, 'qty', e.target.value)} />
+                  <input type="number" placeholder="Rate" value={it.rate}
+                    onChange={e => changeItem(i, 'rate', e.target.value)} />
+                </div>
               ))}
-              <tr><td>CGST 9%</td><td></td><td></td><td></td><td align="right">{cgst}</td></tr>
-              <tr><td>SGST 9%</td><td></td><td></td><td></td><td align="right">{sgst}</td></tr>
-              <tr style={{ fontWeight: 700 }}>
-                <td>TOTAL</td><td></td><td></td><td></td>
-                <td align="right">{total}</td>
-              </tr>
-            </tbody>
-          </table>
 
-          <table width="100%" border="1" style={{ marginTop: 12 }}>
-            <tbody>
-              <tr>
-                <td width="60%">
-                  <b>Amount in Words</b><br />
-                  {numToWords(total)} Rupees Only
-                </td>
-                <td width="40%" align="center">
-                  <b>For SHREE SADGURU KRUPA ENTERPRISES</b><br /><br />
-                  Proprietor
-                </td>
-              </tr>
-            </tbody>
-          </table>
+              <button type="button" onClick={addItem}>+ Add Item</button>
+              <button type="submit" disabled={loading}>{loading ? 'Generating PDF…' : 'Generate PDF'}</button>
+            </form>
+          </div>
+
+          {/* PREVIEW */}
+          <div className="card preview">
+            <div className="header">
+              <div className="shree">श्री</div>
+              <div className="firm">SHREE SADGURU KRUPA ENTERPRISES</div>
+              <div>At- Sarpada Post-Umroli, Palghar, Maharashtra</div>
+              <div className="gst">GSTIN : 27ASKPP5407C1ZS</div>
+              <hr />
+              <h3>TAX INVOICE</h3>
+            </div>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <b>Party Details</b><br />
+                    {form.party_name}<br />
+                    {form.party_address}<br />
+                    <b>GSTIN:</b> {form.party_gstin}
+                  </td>
+                  <td>
+                    <b>Invoice No:</b> {form.invoice_no}<br />
+                    <b>Date:</b> {form.invoice_date}<br />
+                    <b>State:</b> Maharashtra<br />
+                    <b>Code:</b> 27
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>HSN</th>
+                  <th>Qty</th>
+                  <th>Rate</th>
+                  <th>Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((it, i) => (
+                  <tr key={i}>
+                    <td>{it.desc}</td>
+                    <td>{it.hsn}</td>
+                    <td align="right">{it.qty}</td>
+                    <td align="right">{Number(it.rate || 0).toFixed(2)}</td>
+                    <td align="right">{((it.qty || 0) * (it.rate || 0)).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <table className="totals">
+              <tbody>
+                <tr><td>Total</td><td>{subtotal.toFixed(2)}</td></tr>
+                <tr><td>CGST 9%</td><td>{cgst}</td></tr>
+                <tr><td>SGST 9%</td><td>{sgst}</td></tr>
+                <tr className="grand"><td>G. TOTAL</td><td>{total}</td></tr>
+              </tbody>
+            </table>
+
+            <table>
+              <tbody>
+                <tr>
+                  <td><b>Amount In Words</b><br />{numToWords(total)} Rupees Only</td>
+                  <td align="center"><b>SHREE SADGURU KRUPA ENTERPRISES</b><br /><br />Proprietor</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
-    </div>
+    </>
   );
 }

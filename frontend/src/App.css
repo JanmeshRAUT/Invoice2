@@ -1,15 +1,10 @@
 /* ========================================
-   RESET & VARIABLES
+   APP - INVOICE GENERATOR
    ======================================== */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
 
 :root {
   --primary: #2563eb;
-  --primary-dark: #1e40af;
+  --primary-dark: #1d4ed8;
   --primary-light: #dbeafe;
   --success: #10b981;
   --success-dark: #059669;
@@ -20,7 +15,9 @@
   --gray-200: #e5e7eb;
   --gray-300: #d1d5db;
   --gray-400: #9ca3af;
+  --gray-500: #6b7280;
   --gray-600: #4b5563;
+  --gray-700: #374151;
   --gray-800: #1f2937;
   --gray-900: #111827;
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -28,220 +25,193 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --radius: 8px;
   --radius-lg: 12px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.3s ease;
 }
 
-/* ========================================
-   BASE STYLES
-   ======================================== */
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-  background: var(--gray-50);
-  color: var(--gray-800);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  padding-bottom: 50px;
-}
-
-@media (min-width: 769px) {
-  body {
-    padding-bottom: 60px;
-  }
-}
-
-/* ========================================
-   LAYOUT
-   ======================================== */
-.layout {
-  display: flex;
-  flex-direction: column;
+.app-layout {
   min-height: 100vh;
-  background: var(--gray-50);
-  gap: 0;
-  padding: 0;
+  background: linear-gradient(135deg, var(--gray-50) 0%, #f3f8ff 100%);
+  padding: 16px;
+  padding-bottom: 70px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
-@media (min-width: 1024px) {
-  .layout {
-    flex-direction: row;
-    gap: 24px;
-    padding: 24px;
-    max-width: 100%;
-    min-height: calc(100vh - 50px);
+@media (min-width: 640px) {
+  .app-layout {
+    padding: 20px;
+    padding-bottom: 80px;
   }
 }
 
-@media (min-width: 1024px) and (min-width: 769px) {
-  .layout {
-    min-height: calc(100vh - 60px);
-  }
-}
-
-.form-panel {
-  width: 100%;
-  padding: 20px;
-  flex-shrink: 0;
-}
-
 @media (min-width: 1024px) {
-  .form-panel {
-    width: 400px;
-    max-width: 400px;
-    padding: 0;
-    margin: 0;
-    flex-shrink: 0;
-    overflow-y: auto;
-    max-height: calc(100vh - 48px);
-  }
-}
-
-.preview-panel {
-  flex: 1;
-  width: 100%;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 0;
-}
-
-@media (min-width: 1024px) {
-  .preview-panel {
-    flex: 1;
-    width: auto;
-    min-width: 600px;
-    padding: 0;
-  }
-}
-
-.preview-panel h4 {
-  padding: 20px;
-  margin: 0 0 16px 0;
-}
-
-@media (min-width: 1024px) {
-  .preview-panel h4 {
-    padding: 0;
-    margin: 0 0 16px 0;
+  .app-layout {
+    padding: 28px;
+    padding-bottom: 40px;
   }
 }
 
 /* ========================================
-   CARD & CONTAINERS
+   LAYOUT OVERRIDE FOR APP
    ======================================== */
-.card {
-  background: #ffffff;
-  border-radius: var(--radius-lg);
-  padding: 24px;
+
+.app-layout .layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 100%;
+}
+
+@media (min-width: 768px) {
+  .app-layout .layout {
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app-layout .layout {
+    flex-direction: row;
+    gap: 28px;
+    align-items: flex-start;
+  }
+}
+
+/* ========================================
+   FORM PANEL (APP)
+   ======================================== */
+
+.app-layout .card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
   box-shadow: var(--shadow-md);
-  border: 1px solid var(--gray-200);
   transition: var(--transition);
 }
 
-.card:hover {
-  box-shadow: var(--shadow-lg);
+@media (min-width: 768px) {
+  .app-layout .card {
+    padding: 24px;
+    border-radius: 12px;
+  }
 }
 
-/* ========================================
-   TYPOGRAPHY
-   ======================================== */
-.form-panel h3 {
-  margin: 0 0 20px 0;
-  font-size: 26px;
+@media (min-width: 1024px) {
+  .app-layout .card {
+    width: 420px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 28px;
+    padding: 24px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+  }
+
+  .app-layout .card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.app-layout .card h3 {
+  margin: 0 0 24px 0;
+  font-size: 28px;
   font-weight: 700;
   color: var(--gray-900);
   letter-spacing: -0.5px;
 }
 
-.form-panel h4,
-.preview-panel h4 {
-  font-size: 13px;
+@media (max-width: 640px) {
+  .app-layout .card h3 {
+    font-size: 24px;
+  }
+}
+
+.app-layout .card form {
+  display: flex;
+  flex-direction: column;
+}
+
+.app-layout .card h4 {
+  font-size: 12px;
   color: var(--gray-600);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.form-panel h4 {
-  margin: 20px 0 12px 0;
-}
-
-.preview-panel h4 {
-  margin: 0 0 16px 0;
-  font-size: 18px;
-  color: var(--gray-800);
-  text-transform: none;
+  letter-spacing: 1px;
+  margin: 24px 0 14px 0;
+  border-bottom: 2px solid var(--gray-200);
+  padding-bottom: 8px;
 }
 
 /* ========================================
-   FORM INPUTS
+   FORM INPUTS (APP)
    ======================================== */
-.form-panel input {
+
+.app-layout .card input {
   width: 100%;
   padding: 12px 14px;
   margin-bottom: 12px;
-  border: 1px solid var(--gray-300);
+  border: 1.5px solid var(--gray-200);
   border-radius: var(--radius);
   font-size: 14px;
   font-weight: 500;
   color: var(--gray-800);
-  background: white;
+  background: var(--gray-50);
   transition: var(--transition);
 }
 
-.form-panel input::placeholder {
+.app-layout .card input::placeholder {
   color: var(--gray-400);
+  font-weight: 500;
 }
 
-.form-panel input:focus {
+.app-layout .card input:focus {
   outline: none;
   border-color: var(--primary);
+  background: white;
   box-shadow: 0 0 0 3px var(--primary-light);
-  background: #f8fbff;
+}
+
+.app-layout .card input:hover:not(:focus) {
+  border-color: var(--gray-300);
+  background: white;
 }
 
 /* ========================================
-   ITEMS ROW
+   ROW LAYOUT (APP)
    ======================================== */
-.row {
+
+.app-layout .row {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 12px;
 }
 
-.row input {
+.app-layout .row input {
   width: 100%;
 }
 
-@media (min-width: 641px) {
-  .row {
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+@media (min-width: 640px) {
+  .app-layout .row {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }
 
 @media (min-width: 1024px) {
-  .row {
-    grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  .app-layout .row {
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
   }
 }
 
 /* ========================================
-   BUTTONS
+   BUTTONS (APP)
    ======================================== */
-button {
+
+.app-layout button[type="button"],
+.app-layout button[type="submit"] {
   width: 100%;
-  padding: 11px 14px;
-  margin-top: 10px;
-  background: var(--primary);
-  color: white;
+  padding: 12px 16px;
+  margin-top: 8px;
   border: none;
   border-radius: var(--radius);
   font-size: 14px;
@@ -255,352 +225,410 @@ button {
   gap: 8px;
 }
 
-button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-1px);
+.app-layout button[type="button"] {
+  background: var(--success);
+  color: white;
+  margin-top: 12px;
+}
+
+.app-layout button[type="button"]:hover {
+  background: var(--success-dark);
+  transform: translateY(-2px);
   box-shadow: var(--shadow-md);
 }
 
-button:active {
+.app-layout button[type="button"]:active {
   transform: translateY(0);
 }
 
-button:disabled {
+.app-layout button[type="submit"] {
+  background: var(--primary);
+  color: white;
+  margin-top: 12px;
+}
+
+.app-layout button[type="submit"]:hover:not(:disabled) {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.app-layout button[type="submit"]:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.app-layout button[type="submit"]:disabled {
   background: var(--gray-300);
+  color: var(--gray-500);
   cursor: not-allowed;
   transform: none;
 }
 
-button[type="button"] {
-  background: var(--success);
-  margin-bottom: 0;
-}
-
-button[type="button"]:hover {
-  background: var(--success-dark);
-}
-
-@media (min-width: 641px) {
-  button {
-    padding: 12px 16px;
+@media (min-width: 768px) {
+  .app-layout button[type="button"],
+  .app-layout button[type="submit"] {
+    padding: 13px 18px;
     font-size: 15px;
-    margin-top: 12px;
   }
 }
 
 /* ========================================
-   INVOICE PREVIEW
+   PREVIEW PANEL (APP)
    ======================================== */
-.invoice-preview {
-  background: #fff;
-  padding: 16px;
-  border: none;
-  border-radius: 0;
-  min-width: 100%;
+
+.app-layout .preview {
   flex: 1;
-  overflow-y: auto;
-  font-size: 11px;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
 }
 
-@media (min-width: 641px) {
-  .invoice-preview {
-    padding: 20px;
-    font-size: 12px;
+@media (min-width: 768px) {
+  .app-layout .preview {
+    padding: 24px;
+    border-radius: 12px;
+  }
+
+  .app-layout .preview:hover {
+    box-shadow: var(--shadow-lg);
   }
 }
 
 @media (min-width: 1024px) {
-  .invoice-preview {
-    padding: 32px;
-    border: 1px solid var(--gray-200);
-    border-radius: var(--radius-lg);
-    margin: 0;
-    background: #fff;
+  .app-layout .preview {
+    flex: 1;
+    min-width: 650px;
+    padding: 28px;
   }
 }
 
 /* ========================================
-   INVOICE TABLE STYLING
+   PREVIEW HEADER (APP)
    ======================================== */
-.invoice-preview table {
+
+.app-layout .header {
+  text-align: center;
+  border-bottom: 3px solid var(--gray-900);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 768px) {
+  .app-layout .header {
+    padding-bottom: 18px;
+    margin-bottom: 24px;
+  }
+}
+
+.app-layout .shree {
+  font-size: 20px;
+  font-weight: bold;
+  color: #dc2626;
+  margin-bottom: 6px;
+  font-family: 'NotoDeva', Arial, sans-serif;
+}
+
+@media (min-width: 768px) {
+  .app-layout .shree {
+    font-size: 22px;
+  }
+}
+
+.app-layout .firm {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--gray-900);
+  letter-spacing: 0.5px;
+}
+
+@media (min-width: 768px) {
+  .app-layout .firm {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+}
+
+.app-layout .header > div:nth-child(3) {
+  font-size: 12px;
+  color: var(--gray-700);
+  margin-bottom: 4px;
+}
+
+@media (min-width: 768px) {
+  .app-layout .header > div:nth-child(3) {
+    font-size: 13px;
+  }
+}
+
+.app-layout .gst {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 6px 0;
+  color: var(--gray-800);
+}
+
+@media (min-width: 768px) {
+  .app-layout .gst {
+    font-size: 13px;
+  }
+}
+
+.app-layout .header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 14px 0 0 0;
+  color: var(--gray-900);
+  letter-spacing: 1px;
+}
+
+@media (min-width: 768px) {
+  .app-layout .header h3 {
+    font-size: 20px;
+  }
+}
+
+.app-layout .header hr {
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid var(--gray-300);
+}
+
+/* ========================================
+   PREVIEW TABLES (APP)
+   ======================================== */
+
+.app-layout table {
   width: 100%;
   border-collapse: collapse;
-  margin: 8px 0;
-  font-size: inherit;
+  margin-bottom: 14px;
+  font-size: 11px;
+  line-height: 1.5;
 }
 
-@media (min-width: 1024px) {
-  .invoice-preview table {
-    margin: 16px 0;
+@media (min-width: 640px) {
+  .app-layout table {
+    font-size: 12px;
+    margin-bottom: 16px;
   }
 }
 
-.invoice-preview thead {
-  background: var(--gray-100);
-}
-
-.invoice-preview th {
-  padding: 4px 6px;
-  text-align: left;
-  font-weight: 600;
-  border: 1px solid var(--gray-300);
-  background: var(--gray-100);
-}
-
 @media (min-width: 1024px) {
-  .invoice-preview th {
+  .app-layout table {
+    font-size: 13px;
+    margin-bottom: 18px;
+  }
+}
+
+.app-layout table td,
+.app-layout table th {
+  border: 1px solid var(--gray-800);
+  padding: 8px;
+  text-align: left;
+  vertical-align: top;
+}
+
+@media (min-width: 768px) {
+  .app-layout table td,
+  .app-layout table th {
     padding: 10px;
   }
 }
 
-.invoice-preview td {
-  padding: 4px 6px;
-  border: 1px solid var(--gray-200);
+.app-layout table th {
+  background: var(--gray-100);
+  font-weight: 700;
+  color: var(--gray-900);
+  font-size: 11px;
 }
 
-@media (min-width: 1024px) {
-  .invoice-preview td {
-    padding: 8px 10px;
+@media (min-width: 768px) {
+  .app-layout table th {
+    font-size: 12px;
   }
 }
 
-.invoice-preview tbody tr:nth-child(even) {
+.app-layout table tbody tr:nth-child(odd) {
   background: var(--gray-50);
 }
 
-.invoice-preview tr[style*="fontWeight: 700"] {
-  background: var(--gray-100);
+.app-layout table tbody tr:hover {
+  background: var(--primary-light);
+}
+
+.app-layout table.totals {
+  margin-top: 18px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.app-layout table.totals td {
+  padding: 8px 10px;
+  border: 1px solid var(--gray-800);
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .app-layout table.totals td {
+    padding: 10px 12px;
+  }
+}
+
+.app-layout table.totals tr:last-child td {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  .app-layout table.totals tr:last-child td {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+
+.app-layout table.totals tr.grand td {
+  background: linear-gradient(135deg, var(--primary-light) 0%, #c7d2fe 100%);
+  color: var(--primary-dark);
+  border: 2px solid var(--primary);
   font-weight: 700;
 }
 
-.invoice-preview table.party-box,
-.invoice-preview table.footer-box,
-.invoice-preview table.items-table {
-  border: 1px solid var(--gray-800);
-}
-
-.invoice-preview table.items-table thead {
-  background: var(--gray-200);
-}
-
-.invoice-preview table.items-table thead th {
-  border: 1px solid var(--gray-800);
-  background: var(--gray-200);
-}
-
-.invoice-preview table.items-table tbody td {
-  border: 1px solid var(--gray-300);
-}
-
-.invoice-preview table.items-table tbody tr:last-child td {
-  border-bottom: 2px solid var(--gray-800);
-}
-
-.invoice-preview table.items-table tfoot td {
-  border: 1px solid var(--gray-800);
-  font-weight: 600;
-  padding: 10px 8px;
-}
-
-.invoice-preview .amount-col {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-.invoice-preview .party-box td,
-.invoice-preview .footer-box td {
-  border: 1px solid var(--gray-800);
-  padding: 12px;
-}
-
 /* ========================================
-   STATUS BAR
+   STATUS BAR (APP)
    ======================================== */
-.status-bar {
+
+.app-layout .status {
   width: 100%;
-  padding: 0;
-  margin: 0;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  min-height: 50px;
-  background: #fff;
+  flex-wrap: wrap;
+  gap: 8px;
+  transition: var(--transition);
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   z-index: 100;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
 }
 
-@media (min-width: 769px) {
-  .status-bar {
+@media (min-width: 768px) {
+  .app-layout .status {
+    padding: 14px 20px;
+    font-size: 13px;
     min-height: 60px;
   }
 }
 
-.status-bar.connected {
-  background: linear-gradient(135deg, #f0fdf4 0%, #f0fff4 100%);
-  border-bottom-color: #86efac;
-}
-
-.status-bar.disconnected {
-  background: linear-gradient(135deg, #fef2f2 0%, #fff5f5 100%);
-  border-bottom-color: #fca5a5;
-}
-
-.status-bar-content {
-  width: 100%;
-  max-width: 1600px;
-  padding: 0 12px;
-  display: flex;
-  align-items: center;
-}
-
-@media (min-width: 769px) {
-  .status-bar-content {
-    padding: 0 20px;
+@media (min-width: 1024px) {
+  .app-layout .status {
+    padding: 14px 28px;
   }
 }
 
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.app-layout .status.ok {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border-top: 2px solid var(--success);
+  color: #065f46;
 }
 
-.status-dot {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  flex-shrink: 0;
-}
-
-@media (min-width: 769px) {
-  .status-dot {
-    width: 12px;
-    height: 12px;
-  }
-}
-
-.status-bar.connected .status-dot {
-  background: #22c55e;
-  box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-}
-
-.status-bar.disconnected .status-dot {
-  background: #f97316;
-  box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
-  animation: pulse-warning 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-  }
-}
-
-@keyframes pulse-warning {
-  0% {
-    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(249, 115, 22, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(249, 115, 22, 0);
-  }
-}
-
-.status-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.status-label {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-@media (min-width: 769px) {
-  .status-label {
-    font-size: 14px;
-  }
-}
-
-.status-bar.connected .status-label {
-  color: #166534;
-}
-
-.status-bar.disconnected .status-label {
-  color: #7c2d12;
-}
-
-.status-url {
-  margin: 0;
-  font-size: 11px;
-  font-family: 'Courier New', monospace;
-  opacity: 0.7;
-  font-weight: 500;
-}
-
-@media (min-width: 769px) {
-  .status-url {
-    font-size: 12px;
-  }
-}
-
-.status-bar.connected .status-url {
-  color: #166534;
-}
-
-.status-bar.disconnected .status-url {
+.app-layout .status.wait {
+  background: linear-gradient(135deg, #fef2f2 0%, #fef5f5 100%);
+  border-top: 2px solid #f87171;
   color: #7c2d12;
 }
 
 /* ========================================
-   PRINT
+   RESPONSIVE ADJUSTMENTS
    ======================================== */
-@media print {
-  body {
-    background: #fff;
+
+@media (max-width: 640px) {
+  .app-layout .card h3 {
+    font-size: 22px;
   }
 
-  .layout {
-    display: block;
+  .app-layout table {
+    font-size: 10px;
+  }
+
+  .app-layout table td,
+  .app-layout table th {
+    padding: 6px;
+  }
+
+  .app-layout button[type="button"],
+  .app-layout button[type="submit"] {
+    padding: 11px 14px;
+    font-size: 13px;
+  }
+
+  .app-layout .status {
+    min-height: 50px;
+    padding: 10px 12px;
+  }
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+
+.app-layout .card::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-layout .card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.app-layout .card::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 3px;
+}
+
+.app-layout .card::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .app-layout {
     padding: 0;
+    background: white;
+  }
+
+  .app-layout .layout {
     gap: 0;
   }
 
-  .status-bar,
-  .form-panel,
-  .preview-panel h4 {
+  .app-layout .card {
     display: none;
   }
 
-  .preview-panel {
-    width: 100%;
-    padding: 0;
+  .app-layout .status {
+    display: none;
   }
 
-  .invoice-preview {
+  .app-layout .preview {
     box-shadow: none;
-    border: none;
     padding: 0;
-    min-width: 100%;
     margin: 0;
+    border-radius: 0;
+  }
+
+  .app-layout table {
+    page-break-inside: avoid;
   }
 }
