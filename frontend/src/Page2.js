@@ -133,7 +133,7 @@ export default function Page2() {
               ))}
 
               <button type="button" onClick={addItem}>+ Add Item</button>
-              <button disabled={loading}>{loading ? "Generating PDF…" : "Generate PDF"}</button>
+              <button type="submit" disabled={loading}>{loading ? 'Generating PDF…' : 'Generate PDF'}</button>
             </form>
           </div>
 
