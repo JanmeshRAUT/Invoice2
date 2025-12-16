@@ -25,18 +25,7 @@ export default function App() {
   /* ---------------- CHECK CONNECTION ON MOUNT ---------------- */
   useEffect(() => {
     const checkConnection = async () => {
-      const url =
-        process.env.REACT_APP_API_URL ||
-        (window.location.hostname === 'localhost'
-          ? 'http://localhost:5000'
-          : '');
-
-      if (!url) {
-        setConnected(false);
-        setApiUrl('');
-        return;
-      }
-
+      const url = 'https://invoice2-uu6l.onrender.com';
       setApiUrl(url);
       try {
         await axios.get(`${url}/health`, { timeout: 3000 });
