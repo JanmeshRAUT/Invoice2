@@ -175,6 +175,7 @@ app.post('/generate', async (req, res) => {
 
     try {
       await page.setContent(html, { waitUntil: 'networkidle0' });
+      await page.evaluateHandle('document.fonts.ready');
 
       const pdf = await page.pdf({
         format: 'A4',
@@ -240,7 +241,7 @@ function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, par
 
 @font-face {
   font-family: 'NotoDeva';
-  src: url('file://${fontPath}') format('truetype');
+  src: url('${fontPath}') format('truetype');
   font-weight: 100 900;
   font-style: normal;
 }
@@ -397,7 +398,7 @@ body {
       <tr>
         <th width="36%">Description</th>
         <th width="14%">HSN</th>
-        <th width="10%">Qty</th>
+        <th width="8%">Qty</th>
         <th width="20%">Rate</th>
         <th width="20%">Amount</th>
       </tr>
@@ -476,7 +477,7 @@ function generateSandInvoiceHTML(items, invoiceNo, invoiceDate, partyName, party
 @page { size: A4; margin: 10mm; }
 @font-face {
   font-family: 'NotoDeva';
-  src: url('file://${fontPath}') format('truetype');
+  src: url('${fontPath}') format('truetype');
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
