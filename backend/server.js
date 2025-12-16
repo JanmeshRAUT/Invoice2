@@ -110,9 +110,10 @@ app.post('/generate', async (req, res) => {
   size: A4;
   margin: 10mm;
 }
+
 @font-face {
   font-family: 'NotoDeva';
-  src: url('file:///opt/render/project/src/backend/fonts/NotoSansDevanagari-Regular.ttf') format('truetype');
+  src: url('https://fonts.gstatic.com/s/notosansdevanagari/v25/xH2vF5pWnGCMpU5QIauqfBCF6f4.0.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
 }
@@ -128,8 +129,9 @@ body {
   font-size: 12px;
   color: #000;
 }
+
 .deva {
-  font-family: 'NotoDeva', sans-serif;
+  font-family: 'NotoDeva', Arial, sans-serif;
   font-size: 18px;
   font-weight: bold;
 }
