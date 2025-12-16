@@ -201,7 +201,7 @@ app.post('/generate', async (req, res) => {
 /* ================= SIMPLE INVOICE TEMPLATE (CEMENT) ================= */
 function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total) {
   /* ================= DUMMY ROWS ================= */
-  const ROWS_PER_PAGE = 20;
+  const ROWS_PER_PAGE = 35;
   const itemsWithDummies = [...items];
   const dummyCount = ROWS_PER_PAGE - items.length;
   
