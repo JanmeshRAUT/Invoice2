@@ -17,6 +17,12 @@ const fontBuffer = fs.readFileSync(devanagariFontPath);
 const fontBase64 = fontBuffer.toString('base64');
 const devanagariFontDataUrl = `data:font/truetype;base64,${fontBase64}`;
 
+/* ================= SHREE LOGO IMAGE INJECTION ================= */
+const shreeLogoPath = path.join(__dirname, 'images', '360_F_738016352_eZQpnHHGmkRhwO8wKb7FucYWif2vBB3t.jpg');
+const logoBuffer = fs.readFileSync(shreeLogoPath);
+const logoBase64 = logoBuffer.toString('base64');
+const shreeLogoDataUrl = `data:image/jpeg;base64,${logoBase64}`;
+
 /* ================= REUSABLE BROWSER INSTANCE ================= */
 async function getBrowser() {
   if (!browser) {
@@ -166,8 +172,8 @@ app.post('/generate', async (req, res) => {
 
     /* ================= SELECT TEMPLATE ================= */
     const html = invoice_type === 'sand'
-      ? generateSandInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontDataUrl)
-      : generateSimpleInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontDataUrl);
+      ? generateSandInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontDataUrl, shreeLogoDataUrl)
+      : generateSimpleInvoiceHTML(cleanItems, invoice_no, invoice_date, party_name, party_address, party_gstin, subtotal, cgst, sgst, roundoff, total, devanagariFontDataUrl, shreeLogoDataUrl);
 
     /* ================= GENERATE PDF ================= */
     const browser = await getBrowser();
@@ -210,7 +216,7 @@ app.post('/generate', async (req, res) => {
 });
 
 /* ================= SIMPLE INVOICE TEMPLATE (CEMENT) ================= */
-function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total, fontPath) {
+function generateSimpleInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total, fontPath, logoUrl) {
   /* ================= DUMMY ROWS ================= */
   const ROWS_PER_PAGE = 35;
   const itemsWithDummies = [...items];
@@ -375,9 +381,7 @@ body {
 
   <!-- HEADER -->
   <div class="header">
-    <svg class="shree-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <text x="50" y="70" font-size="60" font-weight="bold" text-anchor="middle" fill="red" font-family="'Noto Sans Devanagari', Arial">श्री</text>
-    </svg>
+    <img class="shree-logo" src="${logoUrl}" alt="Shree Logo" />
     <div class="header-title">SHREE SADGURU KRUPA ENTERPRISES</div>
     <div>At- Sarpada Post-Umroli, Palghar, Maharashtra</div>
     <div><b>GSTIN :</b> 27ASKPP5407C1ZS</div>
@@ -464,7 +468,7 @@ body {
 }
 
 /* ================= SAND INVOICE TEMPLATE ================= */
-function generateSandInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total, fontPath) {
+function generateSandInvoiceHTML(items, invoiceNo, invoiceDate, partyName, partyAddress, partyGstin, subtotal, cgst, sgst, roundoff, total, fontPath, logoUrl) {
   const ROWS_PER_PAGE = 35;
   const itemsWithDummies = [...items];
   const dummyCount = ROWS_PER_PAGE - items.length;
@@ -514,9 +518,7 @@ body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
 <body>
 <div class="page">
   <div class="header">
-    <svg class="shree-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <text x="50" y="70" font-size="60" font-weight="bold" text-anchor="middle" fill="red" font-family="'Noto Sans Devanagari', Arial">श्री</text>
-    </svg>
+    <img class="shree-logo" src="${logoUrl}" alt="Shree Logo" />
     <div class="header-title">SHREE SADGURU KRUPA ENTERPRISES</div>
     <div>At-Sarpada Post-Umroli, Tal & Dist. Palghar, Maharashtra</div>
     <div><b>GSTIN :</b> 27ASKPP5407C1ZS</div>

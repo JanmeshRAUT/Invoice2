@@ -140,7 +140,7 @@ export default function Page2() {
           {/* PREVIEW */}
           <div className="card preview">
             <div className="header">
-              <div className="shree">॥ श्री ॥</div>
+              <img className="shree" src="/shree-logo.jpg" alt="Shree Logo" />
               <div className="firm">SHREE SADGURU KRUPA ENTERPRISES</div>
               <div>At-Sarpada Post-Umroli, Tal & Dist. Palghar, Maharashtra</div>
               <div className="gst">GSTIN : 27ASKPP5407C1ZS</div>
