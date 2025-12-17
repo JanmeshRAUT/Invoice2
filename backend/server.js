@@ -264,6 +264,13 @@ body {
   font-weight: bold;
 }
 
+.shree-logo {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 8px;
+  display: block;
+}
+
 /* PAGE */
 .page {
   min-height: 277mm;
@@ -368,7 +375,9 @@ body {
 
   <!-- HEADER -->
   <div class="header">
-    <div class="header-marked deva">|| श्री ||</div>
+    <svg class="shree-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <text x="50" y="70" font-size="60" font-weight="bold" text-anchor="middle" fill="red" font-family="'Noto Sans Devanagari', Arial">श्री</text>
+    </svg>
     <div class="header-title">SHREE SADGURU KRUPA ENTERPRISES</div>
     <div>At- Sarpada Post-Umroli, Palghar, Maharashtra</div>
     <div><b>GSTIN :</b> 27ASKPP5407C1ZS</div>
@@ -482,6 +491,7 @@ function generateSandInvoiceHTML(items, invoiceNo, invoiceDate, partyName, party
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
 .deva { font-family: 'NotoDeva', Arial, sans-serif; font-size: 18px; font-weight: bold; }
+.shree-logo { width: 60px; height: 60px; margin: 0 auto 8px; display: block; }
 .page { min-height: 277mm; display: flex; flex-direction: column; }
 .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; }
 .header-title { font-size: 16px; font-weight: bold; }
@@ -504,7 +514,9 @@ body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
 <body>
 <div class="page">
   <div class="header">
-    <div class="header-marked deva">|| श्री ||</div>
+    <svg class="shree-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <text x="50" y="70" font-size="60" font-weight="bold" text-anchor="middle" fill="red" font-family="'Noto Sans Devanagari', Arial">श्री</text>
+    </svg>
     <div class="header-title">SHREE SADGURU KRUPA ENTERPRISES</div>
     <div>At-Sarpada Post-Umroli, Tal & Dist. Palghar, Maharashtra</div>
     <div><b>GSTIN :</b> 27ASKPP5407C1ZS</div>
