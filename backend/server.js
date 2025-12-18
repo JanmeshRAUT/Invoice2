@@ -546,8 +546,8 @@ body { font-family: Arial, sans-serif; font-size: 12px; color: #000; }
       <tr>
         <th width="8%">Date</th>
         <th width="8%">Challan</th>
-        <th width="12%">Truck</th>
-        <th width="27%">Description</th>
+        <th width="11%">Truck</th>
+        <th width="28%">Description</th>
         <th width="8%">HSN</th>
         <th width="7%">Qty</th>
         <th width="10%">Rate</th>
